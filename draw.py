@@ -31,7 +31,7 @@ class draw():
 
 if __name__ == '__main__':
     draw = draw()
-    draw.obj = CG()
+    draw.obj = GD()
     draw.show()
 
 

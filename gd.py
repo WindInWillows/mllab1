@@ -32,6 +32,7 @@ class GD():
             self.coes -= self.step * dj
             j_old = j_new
             j_new = self._J()
+            # self.line_search(dj)
             if j_new > j_old :
                 self.step *= 0.5
 
@@ -42,6 +43,31 @@ class GD():
         return mat.tolist()[0][0]
 
     def _get_num(self,mat):
+        return mat.tolist()[0][0]
+
+    def line_search(self,d):
+        jj = self._J()
+        self.step = 1.
+        tmpj = self._testJ(self.coes - self.step * d)
+        while tmpj > jj:
+            self.step /= 2
+            tmpj = self._testJ(self.coes - self.step * d)
+
+        while True:
+            self.step /= 2
+            tmpj = self._testJ(self.coes - self.step * d)
+            if tmpj <=jj:
+                if jj - tmpj < jj*0.1:
+                    break
+                jj = tmpj
+            else:
+                self.step *= 2
+                break
+
+    def _testJ(self,coes):
+        mat = (self.X * coes - self.Y)
+        mat = mat.T * mat
+        mat = mat + self._lambda * (self._get_num(coes.T * coes) ** 0.5)
         return mat.tolist()[0][0]
 
     def _dJ(self):
